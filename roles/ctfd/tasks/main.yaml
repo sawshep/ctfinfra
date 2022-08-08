@@ -1,0 +1,23 @@
+---
+- name: copy nginx proxy config
+  copy:
+    src: ctfd
+    dest: /etc/nginx/conf.d/ctfd-proxy.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: install systemd services
+  copy:
+    src: ctfd.service
+    dest: /etc/systemd/system/ctfd.service
+    owner: root
+    group: root
+    mode: 644
+
+- name: start and enable container services
+  systemd:
+    name: ctfd
+    state: restarted
+    enabled: yes
+

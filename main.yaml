@@ -1,0 +1,17 @@
+---
+- hosts: all
+  vars:
+    domain: yourdomainhere.tld
+    users:
+      - admin
+      - ansible
+  become: true
+  become_user: root
+
+  roles:
+    - role: users
+    - role: podman
+    - role: ctfd
+    - role: reverse-proxy
+    - role: certbot
+    - role: ufw

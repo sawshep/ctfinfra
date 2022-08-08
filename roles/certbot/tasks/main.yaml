@@ -1,0 +1,50 @@
+---
+- name: install snapd
+  dnf:
+    name: snapd
+    state: latest
+
+- name: start snap
+  systemd:
+    name: snapd
+    state: started
+
+- name: install snap core
+  snap:
+    name: core
+
+- name: enable classic snap
+  file:
+    src: /var/lib/snapd/snap
+    dest: /snap
+    state: link
+
+- name: remove dnf certbot
+  dnf:
+    name: cerbot
+    state: absent
+
+- name: install certbot
+  snap:
+    name: certbot
+    classic: yes
+
+- name: register certbot
+  shell: |
+    certbot -n register --agree-tos --email you@youremailhere.tld
+    touch /etc/letsencrypt/.registered
+  args:
+    creates: /etc/letsencrypt/.registered
+
+- name: install certs
+  command: certbot run -n --nginx -d {{ domain }}
+
+- name: make certbot renewal cronjob
+  cron:
+    name: certbot
+    job: "/bin/bash -lc 'certbot -q renew'"
+    minute: "0"
+    hour: "0"
+    day: "*"
+    month: "*"
+    weekday: "0"

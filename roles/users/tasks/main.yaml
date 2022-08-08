@@ -1,0 +1,23 @@
+---
+- name: read admin password
+  include_vars:
+    file: secrets.yaml
+
+- name: create admin
+  user:
+    name: admin
+    password: "{{ admin_password }}"
+    groups:
+      - wheel
+    state: present
+    
+- name: create ansible user
+  user:
+    name: ansible
+    state: present
+
+- name: allow ansible passwordless become
+  lineinfile:
+    path: /etc/sudoers
+    line: ansible ALL=(ALL) NOPASSWD:ALL
+    insertafter: root\sALL=(ALL)\sALL

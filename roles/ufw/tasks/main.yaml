@@ -1,0 +1,41 @@
+---
+- name: install ufw
+  dnf:
+    name: ufw
+    state: present
+
+- name: block all traffic
+  ufw:
+    state: enabled
+    policy: deny
+
+- name: turn on logging
+  ufw:
+    logging: on
+
+- name: rate limit ssh
+  ufw:
+    rule: limit
+    port: ssh
+    proto: tcp
+
+- name: allow http
+  ufw:
+    rule: allow
+    port: http
+
+- name: allow https
+  ufw:
+    rule: allow
+    port: https
+
+- name: allow dns out
+  ufw:
+    rule: allow
+    port: 53
+    direction: out
+
+- name: allow ntp
+  ufw:
+    rule: allow
+    port: ntp

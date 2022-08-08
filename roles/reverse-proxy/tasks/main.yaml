@@ -1,0 +1,16 @@
+---
+- name: install nginx
+  dnf:
+    name: nginx
+    state: present
+
+- name: allow nginx to make connections
+  ansible.posix.seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
+
+- name: start nginx reverse proxy
+  service:
+    name: nginx
+    state: restarted
